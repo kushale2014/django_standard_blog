@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block active_home %}active{% endblock %}
+
+{% block content %}
+{% for i in list_articles %}
+<ul class="list-group mt-4">
+    <li class="list-group-item list-group-item-info">
+        {% if i.img %}
+        <img src="{{i.img.url}}" class="img-fluid" alt="" width="100" , heght="100">
+        {% endif %}
+        <span class="m-2"><a href="/detail/{{i.id}}"><b>{{i.name}}</b></a></span>
+        <span class="m-2">Автор: <b>{{i.author}}</b></span>
+        <span class="m-2 time">Время публикации: <b>{{i.date_pub}}</b></span>
+    </li>
+</ul>
+{% endfor %}
+
+{% include 'include/pagination.html' %}
+{% endblock %}

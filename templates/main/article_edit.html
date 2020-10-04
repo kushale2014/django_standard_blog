@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block active_admin %}active{% endblock %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% load main_tag %}
+
+{% block content %}
+<h1 class=" mt-4"></h1>
+
+{% if update %}
+<p class="mt-4">Страница редактирования</p>
+<p><a href="{% url 'edit_page' %}">Вернуться назад</a></p>
+{% if form.img.value %}
+<img src="{{form.img.value.url}}" class="img-fluid" alt="" width="200" , heght="200">
+{% endif %}
+<form id="update_data" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form|crispy}}
+</form>
+<button form="update_data" type="submit" class="btn btn-primary">Обновить</button>
+{% else %}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Добавить новую статью
+</button>
+
+<div class="module" id="changelist">
+    <form id="changelist-form" method="post" action="{% url 'action' %}" novalidate>
+        {% csrf_token %}
+        <div class="actions mt-4">
+            <label>Действие: <select id="action" name="action">
+                    <option value="none" selected="">---------</option>
+                    <option value="publish">Опубликовать</option>
+                    <option value="unpublish">Снять с публикации</option>
+                    <option value="delete">Удалить выбранные Статьи</option>
+                </select></label>
+            <a class="btn btn-secondary" title="Выполнить выбранное действие" href="javascript:void()"
+                onclick="action_submit()" disabled>Выполнить</a>
+            <span class="action-counter" style="display: inline;"></span>
+        </div>
+
+        {% if messages %}
+        <ul class="messagelist mt-4">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="results">
+            <table class="table table-bordered mt-4" id="result_list">
+                <thead>
+                    <tr>
+                        <th scope="col" class="action-checkbox-column">
+                            <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col">id</th>
+                        <th scope="col">Время создания</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Статус документа</th>
+                        <th scope="col">Редактирование</th>
+                        <th scope="col">Удаление</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in list_articles %}
+                    <tr {% if i.id|slugify == request.GET.id %} class="table-success" {% endif %}>
+                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="{{i.id}}"
+                                class="action-select">
+                        </td>
+                        <td>{{i.id}}</td>
+                        <td>{{i.date_create}}</td>
+                        <td>{% if i.img %}
+                            <img src="{{i.img.url}}" class="img-fluid" alt="" width="100" , heght="100">
+                            {% endif %}{{i.name}}
+                        </td>
+                        <td id="status_{{i.id}}" class="status {% if i.status == 0 %}draft{% endif %}">
+                            {% get_td_status article=i %}
+                        </td>
+                        <td>
+                            <a class="btn btn-info" href="{% url 'update_page' i.id %}">редактировать</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="javascript:void()"
+                                onclick="question(this,'delete')">удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавление новой статьи</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">закрыть</button>
+                <button form="add_form" type="submit" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% load static %}
+{% block ajax %}
+<!-- Optional JavaScript -->
+<script type="text/javascript" src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}

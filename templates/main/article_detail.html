@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block active_home %}active{% endblock %}
+
+{% block content %}
+<p><a href="/">Вернуться назад</a></p>
+
+{% if get_article.img %}
+<img src="{{get_article.img.url}}" class="img-fluid" alt="">
+{% endif %}
+<h1 class="mt-4">{{get_article.name}}</h1>
+<table class="table table-hover">
+    <tbody>
+        <tr>
+            <td class="col-4">
+                <h5>Время создания:</h5>
+            </td>
+            <td>
+                <h3>{{get_article.date_create}}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-4">
+                <h5>Время редактирования:</h5>
+            </td>
+            <td>
+                <h3>{{get_article.date_change}}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-4">
+                <h5>Время публикации:</h5>
+            </td>
+            <td>
+                <h3>{{get_article.date_pub}}</h3>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-4"></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<h5 class="ml-4">{{get_article.text}}</h5>
+
+
+{% endblock %}

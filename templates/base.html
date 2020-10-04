@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <!-- Optional JavaScript -->
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script> -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <title>Стандартный блог</title>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <nav class="navbar navbar-dark bg-dark">
+            <!-- Navbar content -->
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link {% block active_home %}{% endblock %}" href=" {% url 'home' %}">Главная</a>
+                </li>
+
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link {% block active_admin %}{% endblock %}"
+                        href="{% url 'edit_page' %}">Админпанель</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn-danger ml-5" href="{% url 'logout_page' %}">Выйти ({{request.user}})</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    {% url 'login_page' as url_login_page %}
+                    <a class="nav-link {% if url_login_page == request.path %}active{% endif %}"
+                        href="{{url_login_page}}">Авторизация</a>
+                </li>
+                <li class="nav-item">
+                    {% url 'register_page' as url_register_page %}
+                    <a class="nav-link {% if url_register_page == request.path %}active{% endif %}"
+                        href="{{url_register_page}}">Регистрация</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {% block ajax %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+{{article.get_status_display}}
+{% if article.status == 0 %}
+<a class="btn btn-primary" href="{% url 'toggle_public' article.id 1 %}">Опубликовать</a>
+{% else%}
+<a class="btn btn-secondary" href="{% url 'toggle_public' article.id 0 %}">Снять с
+    публикации</a>
+{% endif%}
